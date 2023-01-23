@@ -37,7 +37,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	virtual void ReceiveInstaKill() override;
+	void ReceiveInstaKill_Implementation();
 
 	virtual void Die() override;
 

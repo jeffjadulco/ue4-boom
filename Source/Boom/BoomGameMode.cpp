@@ -72,11 +72,10 @@ TArray<ABoomSpawnPoint*> ABoomGameMode::SpawnCrates(TArray<ABoomSpawnPoint*>& Sp
 			{
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-				// SpawnParams.Name = TEXT("BoomCrate %d", RandomIndex);
 
 				FTransform SpawnTransform = RandomSpawnPoint->GetActorTransform();
 
-				UE_LOG(LogTemp, Log, TEXT("SpawnCrates: Index=%d"), i);
+				// UE_LOG(LogTemp, Log, TEXT("SpawnCrates: Index=%d"), i);
 				
 				GetWorld()->SpawnActor<ABoomCrate>(CrateClass, SpawnTransform, SpawnParams);
 			}
@@ -98,7 +97,7 @@ void ABoomGameMode::SpawnEnemies(TArray<ABoomSpawnPoint*>& SpawnPoints)
 			if (GetWorld() && RandomSpawnPoint)
 			{
 				FActorSpawnParameters SpawnParams;
-				SpawnParams.Name = "BoomEnemy" + RandomIndex;
+				SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 				FTransform SpawnTransform = RandomSpawnPoint->GetActorTransform();
 				

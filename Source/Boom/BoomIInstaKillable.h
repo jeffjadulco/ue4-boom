@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "BoomIInstaKillable.generated.h"
 
-UINTERFACE(Blueprintable)
+UINTERFACE(Blueprintable, MinimalAPI)
 class UBoomIInstaKillable : public UInterface
 {
 	GENERATED_BODY()
@@ -17,5 +17,6 @@ class BOOM_API IBoomIInstaKillable
 	GENERATED_BODY()
 
 public:
-	virtual void ReceiveInstaKill() =0;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Damage")
+	void ReceiveInstaKill();
 };

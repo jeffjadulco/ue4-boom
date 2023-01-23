@@ -43,10 +43,10 @@ protected:
 	float GameOverRestartDelay = 3.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
-	bool bSpawnCrates = false;
+	bool bSpawnCrates = true;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
-	bool bSpawnEnemies = false;
+	bool bSpawnEnemies = true;
 	
 private:
 	/**

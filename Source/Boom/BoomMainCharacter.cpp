@@ -52,7 +52,7 @@ void ABoomMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	PlayerInputComponent->BindAction("Skill1", IE_Pressed, this, &ABoomMainCharacter::OnSkill1Pressed);
 }
 
-void ABoomMainCharacter::ReceiveInstaKill()
+void ABoomMainCharacter::ReceiveInstaKill_Implementation()
 {
 	Die();
 }
