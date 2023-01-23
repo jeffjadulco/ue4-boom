@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "BoomCrate.h"
 #include "BoomEnemyCharacter.h"
+#include "GameFramework/PlayerStart.h"
 
 void ABoomGameMode::BeginPlay()
 {
@@ -34,6 +35,21 @@ void ABoomGameMode::BeginPlay()
 	auto RemainingSpawnPoints = SpawnCrates(SpawnPoints);
 	SpawnEnemies(RemainingSpawnPoints);
 #endif
+}
+
+AActor* ABoomGameMode::FindPlayerStart_Implementation(AController* Player, const FString& IncomingName)
+{
+	TArray<AActor*> PlayerStartActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStartActors);
+
+	const int32 RandomIndex = FMath::RandRange(0, PlayerStartActors.Num() - 1);
+	if (PlayerStartActors.IsValidIndex(RandomIndex))
+	{
+		return PlayerStartActors[RandomIndex];
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Cannot find a APlayerStart!"))
+	return nullptr;
 }
 
 TArray<ABoomSpawnPoint*> ABoomGameMode::SpawnCrates(TArray<ABoomSpawnPoint*>& SpawnPoints)

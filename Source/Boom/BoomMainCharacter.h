@@ -33,6 +33,8 @@ protected:
 	void OnSkill1Pressed();
 
 public:
+	virtual void PostInitializeComponents() override;
+
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	virtual void ReceiveInstaKill() override;

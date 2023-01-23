@@ -4,6 +4,7 @@
 #include "BoomMainCharacter.h"
 
 #include "BoomBomb.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -32,6 +33,11 @@ void ABoomMainCharacter::OnMoveVertical(float AxisValue)
 void ABoomMainCharacter::OnSkill1Pressed()
 {
 	SpawnBomb();
+}
+
+void ABoomMainCharacter::PostInitializeComponents()
+{
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void ABoomMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
