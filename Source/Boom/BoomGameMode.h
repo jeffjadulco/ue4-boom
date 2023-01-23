@@ -8,7 +8,7 @@
 #include "BoomGameMode.generated.h"
 
 class ABoomCrate;
-class ABoomEnemyBase;
+class ABoomEnemyCharacter;
 
 
 /**
@@ -32,7 +32,13 @@ protected:
 	TSubclassOf<ABoomCrate> CrateClass;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spawning")
-	TSubclassOf<ABoomEnemyBase> EnemyClass;
+	TSubclassOf<ABoomEnemyCharacter> EnemyClass;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
+	bool bSpawnCrates = false;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
+	bool bSpawnEnemies = false;
 	
 private:
 	/**

@@ -3,23 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BoomIDamageable.h"
 #include "GameFramework/Actor.h"
 #include "BoomCrate.generated.h"
 
 UCLASS()
-class BOOM_API ABoomCrate : public AActor
+class BOOM_API ABoomCrate : public AActor, public IBoomIDamageable
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	ABoomCrate();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	virtual void TakeDamage_Implementation() override;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+protected:
+	virtual void BeginPlay() override;
 };

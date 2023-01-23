@@ -5,7 +5,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "BoomCrate.h"
-#include "BoomEnemyBase.h"
+#include "BoomEnemyCharacter.h"
 
 void ABoomGameMode::BeginPlay()
 {
@@ -20,8 +20,20 @@ void ABoomGameMode::BeginPlay()
 		SpawnPoints.Add(Cast<ABoomSpawnPoint>(SpawnPointActor));
 	}
 
+#if !UE_BUILD_SHIPPING
+	TArray<ABoomSpawnPoint*> RemainingSpawnPoints = SpawnPoints; 
+	if (bSpawnCrates)
+	{
+		RemainingSpawnPoints = SpawnCrates(SpawnPoints);
+	}
+	if (bSpawnEnemies)
+	{
+		SpawnEnemies(RemainingSpawnPoints);
+	}
+#else
 	auto RemainingSpawnPoints = SpawnCrates(SpawnPoints);
 	SpawnEnemies(RemainingSpawnPoints);
+#endif
 }
 
 TArray<ABoomSpawnPoint*> ABoomGameMode::SpawnCrates(TArray<ABoomSpawnPoint*>& SpawnPoints)
@@ -67,7 +79,7 @@ void ABoomGameMode::SpawnEnemies(TArray<ABoomSpawnPoint*>& SpawnPoints)
 
 				FTransform SpawnTransform = RandomSpawnPoint->GetActorTransform();
 				
-				ABoomEnemyBase* NewEnemy = GetWorld()->SpawnActor<ABoomEnemyBase>(EnemyClass, SpawnTransform, SpawnParams);
+				ABoomEnemyCharacter* NewEnemy = GetWorld()->SpawnActor<ABoomEnemyCharacter>(EnemyClass, SpawnTransform, SpawnParams);
 				if (NewEnemy)
 				{
 					if (NewEnemy->Controller == nullptr)
