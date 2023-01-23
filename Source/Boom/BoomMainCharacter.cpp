@@ -4,6 +4,7 @@
 #include "BoomMainCharacter.h"
 
 #include "BoomBomb.h"
+#include "BoomGameMode.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -37,6 +38,7 @@ void ABoomMainCharacter::OnSkill1Pressed()
 
 void ABoomMainCharacter::PostInitializeComponents()
 {
+	Super::PostInitializeComponents();
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
@@ -53,6 +55,17 @@ void ABoomMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 void ABoomMainCharacter::ReceiveInstaKill()
 {
 	Die();
+}
+
+void ABoomMainCharacter::Die()
+{
+	Super::Die();
+
+	// TODO: Do the inverse. GameMode should bind to ABoomCharacterBase::OnDie
+	if (const auto GM = Cast<ABoomGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		GM->GameOver();
+	}
 }
 
 void ABoomMainCharacter::SpawnBomb()

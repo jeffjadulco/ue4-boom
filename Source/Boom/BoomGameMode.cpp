@@ -8,6 +8,13 @@
 #include "BoomEnemyCharacter.h"
 #include "GameFramework/PlayerStart.h"
 
+void ABoomGameMode::GameOver()
+{
+	FTimerHandle GameOverTimerHandle;
+
+	GetWorld()->GetTimerManager().SetTimer(GameOverTimerHandle, FTimerDelegate::CreateUObject(this, &ABoomGameMode::RestartGame), GameOverRestartDelay, false);
+}
+
 void ABoomGameMode::BeginPlay()
 {
 	Super::BeginPlay();

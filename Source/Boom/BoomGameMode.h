@@ -19,8 +19,13 @@ class BOOM_API ABoomGameMode : public AGameMode
 {
 	GENERATED_BODY()
 
+public:
+	void GameOver();
+
 protected:
 	virtual void BeginPlay() override;
+	virtual AActor* FindPlayerStart_Implementation(AController* Player, const FString& IncomingName) override;
+	
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spawning")
 	int32 InitialCrateCount = 32;
@@ -33,6 +38,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spawning")
 	TSubclassOf<ABoomEnemyCharacter> EnemyClass;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="State")
+	float GameOverRestartDelay = 3.0f;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Debug")
 	bool bSpawnCrates = false;

@@ -39,6 +39,8 @@ public:
 	
 	virtual void ReceiveInstaKill() override;
 
+	virtual void Die() override;
+
 private:
 	void SpawnBomb();
 };
