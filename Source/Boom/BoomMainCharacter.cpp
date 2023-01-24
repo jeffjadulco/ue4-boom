@@ -13,6 +13,9 @@ ABoomMainCharacter::ABoomMainCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
+
+	// To be used by powerup overlap event logic
+	Tags.Add("Player");
 }
 
 void ABoomMainCharacter::BeginPlay()

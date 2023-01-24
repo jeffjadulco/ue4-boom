@@ -9,7 +9,7 @@
 
 class ABoomCrate;
 class ABoomEnemyCharacter;
-
+class ABoomPowerup;
 
 /**
  * 
@@ -20,7 +20,11 @@ class BOOM_API ABoomGameMode : public AGameMode
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, Category="Gameplay")
 	void GameOver();
+
+	UFUNCTION(BlueprintCallable, Category="Gameplay")
+	void GameWon();
 
 protected:
 	virtual void BeginPlay() override;
@@ -39,6 +43,12 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spawning")
 	TSubclassOf<ABoomEnemyCharacter> EnemyClass;
 
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spawning")
+	TSubclassOf<ABoomPowerup> PortalClass;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Spawning")
+	TArray<TSubclassOf<ABoomPowerup>> PowerupClasses;
+	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="State")
 	float GameOverRestartDelay = 3.0f;
 
@@ -59,4 +69,11 @@ private:
 	 * Spawn enemies in random spawn points
 	 */
 	void SpawnEnemies(TArray<ABoomSpawnPoint*> &SpawnPoints);
+	
+	UFUNCTION()
+	void OnEnemyDie();
+
+	void AssignPortalAndPowerups();
+
+	int32 DeadEnemyCount = 0;
 };

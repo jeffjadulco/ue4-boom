@@ -10,9 +10,22 @@
 
 void ABoomGameMode::GameOver()
 {
+	EndMatch();
+	
 	FTimerHandle GameOverTimerHandle;
-
 	GetWorld()->GetTimerManager().SetTimer(GameOverTimerHandle, FTimerDelegate::CreateUObject(this, &ABoomGameMode::RestartGame), GameOverRestartDelay, false);
+
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, "Game Over!");
+}
+
+void ABoomGameMode::GameWon()
+{
+	EndMatch();
+	
+	FTimerHandle GameOverTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(GameOverTimerHandle, FTimerDelegate::CreateUObject(this, &ABoomGameMode::RestartGame), GameOverRestartDelay, false);
+
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Emerald, "Game Won!");
 }
 
 void ABoomGameMode::BeginPlay()
@@ -67,7 +80,7 @@ TArray<ABoomSpawnPoint*> ABoomGameMode::SpawnCrates(TArray<ABoomSpawnPoint*>& Sp
 		const int32 RandomIndex = FMath::RandRange(0, SpawnPoints.Num() - 1);
 		if (SpawnPoints.IsValidIndex(RandomIndex))
 		{
-			const ABoomSpawnPoint* RandomSpawnPoint = SpawnPoints[RandomIndex];
+			ABoomSpawnPoint* RandomSpawnPoint = SpawnPoints[RandomIndex];
 			if (GetWorld() && RandomSpawnPoint)
 			{
 				FActorSpawnParameters SpawnParams;
@@ -76,8 +89,9 @@ TArray<ABoomSpawnPoint*> ABoomGameMode::SpawnCrates(TArray<ABoomSpawnPoint*>& Sp
 				FTransform SpawnTransform = RandomSpawnPoint->GetActorTransform();
 
 				// UE_LOG(LogTemp, Log, TEXT("SpawnCrates: Index=%d"), i);
-				
-				GetWorld()->SpawnActor<ABoomCrate>(CrateClass, SpawnTransform, SpawnParams);
+
+				const auto SpawnedCrate = GetWorld()->SpawnActor<ABoomCrate>(CrateClass, SpawnTransform, SpawnParams);
+				RandomSpawnPoint->SetSpawnedActor(SpawnedCrate);
 			}
 
 			SpawnPoints.RemoveAt(RandomIndex);
@@ -108,10 +122,58 @@ void ABoomGameMode::SpawnEnemies(TArray<ABoomSpawnPoint*>& SpawnPoints)
 					{
 						NewEnemy->SpawnDefaultController();
 					}
+
+					NewEnemy->OnDie.BindDynamic(this, &ABoomGameMode::OnEnemyDie);
 				}
 			}
 
 			SpawnPoints.RemoveAt(RandomIndex);
 		}
+	}
+}
+
+void ABoomGameMode::OnEnemyDie()
+{
+	DeadEnemyCount++;
+	if (DeadEnemyCount >= InitialEnemyCount)
+	{
+		AssignPortalAndPowerups();
+	}
+}
+
+void ABoomGameMode::AssignPortalAndPowerups()
+{
+	// Set random portal + powerup to available crates
+	TArray<AActor*> SpawnPointActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABoomSpawnPoint::StaticClass(), SpawnPointActors);
+
+	TArray<ABoomCrate*> AvailableCrates;
+	for (AActor* SpawnPointActor : SpawnPointActors)
+	{
+		if (const auto SpawnPoint = Cast<ABoomSpawnPoint>(SpawnPointActor))
+		{
+			if (const auto CrateRef = Cast<ABoomCrate>(SpawnPoint->SpawnedActorReference))
+			{
+				AvailableCrates.Add(CrateRef);
+			}
+		}
+	}
+
+	if (AvailableCrates.Num() > 0)
+	{
+		// Assign a loot/powerup on destroy
+		const int32 RandomIndex = FMath::RandRange(0, AvailableCrates.Num() - 1);
+		if (AvailableCrates.IsValidIndex(RandomIndex))
+		{
+			const auto RandomCrate = AvailableCrates[RandomIndex];
+			RandomCrate->SetPowerupToSpawnOnDestroy(PortalClass);
+			RandomCrate->Highlight();
+		}
+	}
+	else
+	{
+		// If there are no available crates, spawn random portal
+		const int32 RandomIndex = FMath::RandRange(0, SpawnPointActors.Num() - 1);
+		// TODO: Spawn portal 
 	}
 }
